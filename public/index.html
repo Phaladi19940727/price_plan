@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PHONEBILL SQL API</title>
+    <!-- <script src="index.js"></script> -->
+    <script src="https://unpkg.com/alpinejs" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" />
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <style>
+        [x-cloak] {
+            display: none;
+        }
+    </style>
+    <script src="code.js"></script>
+
+</head>
+
+<body class="container" style="background-color: rgb(180, 85, 30);">
+
+    <div class="card" x-data="BOOTCAMPEXPRESSAPIWITHSQL" x-cloak>
+        <main>
+            <section>
+                <div class="row">
+                    <div class="col l12 m12 s12" style="text-align: center; background-color: hsl(27, 71%, 26%);">
+                        <p x-text="title"></p>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <div class="row" style="text-align: center;">
+                    <!-- Adding a price plan starts here -->
+                    <div class="col l6 m12 col s12" style="background-color: #ffae7f;">
+                        <p x-text="titlePhoneBillsqladd"></p>
+                        <form class="col s12" x-on:submit.prevent="plan_name, call_price, sms_price">
+                            <div class="row">
+                                <div class="input-field col s12">
+                                    <label for="name">Enter Plan Name:</label>
+                                    <input type="text" id="name" name="name" x-model="plan_name" placeholder="Enter your plan name here">
+                                </div>
+
+                                <div class="input-field col s12">
+
+                                    <label for="name">Enter Call Price:</label>
+                                    <input  type="number"  x-model="call_price" placeholder="Enter your call price here">
+                                </div>
+
+                                <div class="input-field col s12">
+                                    <label for="name">Enter Sms Price:</label>
+                                    <input type="number" x-model="sms_price" placeholder="Enter your sms price here">
+                                </div>
+                            </div>
+                            <div>
+                                <span x-text="addMessage" style="color: hsl(29, 100%, 50%);"></span>
+                            </div>
+    
+                            <div>
+                                <span x-text="updateMessage" style="color: rgb(226, 43, 180);"></span>
+                            </div>
+                            <button x-on:click="createPlan()" class="waves-effect waves-light btn-small">Add
+                                </button>
+
+                                <button x-on:click="updatePlan()" class="waves-effect waves-light btn-small">update</button>
+
+                                <button x-on:click="refresh()" class="waves-effect waves-light btn-small">reset</button>
+
+                        </form>
+                    </div>
+                    <!-- adding a price plan ends here -->
+                    <!-- Total price plan price plan starts here -->
+
+                    <div class="col l6 m12 s12" style="background-color: rgb(201, 92, 128);">
+                        <p x-text="titlePhoneBillsqlupdate"></p>
+                        <form x-on:submit.prevent="selectedName, actions">
+                            
+                            
+                            <label for="name">Plan Name:</label><br>
+                            <input x-model="selectedName" type="text" id="selectedName" name="selectedName" placeholder="Enter an existing plan name"><br>
+    
+                            <label for="actions">Actions:</label><br>
+                            <input x-model="actions" type="text" id="actions"  name="actions" placeholder="Enter comma seperated string i.e call,sms,call,sms"><br><br><br><br><br>
+                            
+                            <button x-on:click="phoneBill" class="waves-effect waves-light btn-small">Total</button>
+                            <button x-on:click="totalefresh()" class="waves-effect waves-light btn-small">reset</button>
+                        </form>
+    
+                        <div>
+                           <label>R<span x-text="total"></span></label>
+                        </div>
+                    </div>
+                    <!-- updating an exisiting price plan ends here -->
+                    
+                </div>
+            </section>
+
+            
+            <section>
+             
+                <div class="row">
+                    <!-- Available price plan starts here -->
+                    
+                   
+                    <div class="col l12 m12 s12" style="text-align: center; background-color: rgb(255, 0, 119);">
+                        <p x-text="titlePhoneBillsqlavailable" style="text-align: center;"></p>
+                        <button x-on:click="open=!open" class="waves-effect waves-light btn">Show/Hide plans</button>
+                        <div>
+                            <span x-text="deleteMesage" style="color: rgb(255, 0, 170);"></span>
+                        </div>
+                        
+                        
+                        <div x-show="open">
+                            <table class="bordered">
+                                <thead style="text-align: center;">
+                                    <tr>
+                                        <!-- <th colspan="3">ID</th> -->
+                                        <th colspan="3">PLAN NAME</th>
+                                        <th colspan="3">CALL PRICE</th>
+                                        <th colspan="3">SMS PRICE</th>
+                                        <th colspan="3">TOTAL</th>
+                                        <th colspan="3">ACTION</th>
+                                    </tr>
+                                </thead>
+                                <template x-for="i in response">
+                                    <tbody style="text-align: center;">
+                                        <tr>
+                                            <!-- <td colspan="3" x-text="i.id"></td> -->
+                                            <td colspan="3"x-text="i.plan_name"></td>
+                                            <td colspan="3"x-text="i.call_price"></td>
+                                            <td colspan="3" x-text="i.sms_price"></td>
+                                            <td colspan="3" x-text="i.total">johnsmim</td>
+                                            <td colspan="3"> <button x-on:click="deletePlan(i.plan_name)"
+                                                    class="waves-effect waves-light btn-small">delete
+                                                    plan</button></td>
+                                        </tr>
+                                    </tbody>
+                                </template>
+                            </table>
+
+                        </div>
+                    </div>
+                    <!-- Available price plan ends here -->
+
+
+                </div>
+            </section>
+
+        </main>
+</body>
+<footer class="page-footer">
+
+    <div class="footer-copyright">
+        <div class="row">
+            <div class="col m8 l12 s12" style="text-align: center;">
+                <a class="grey-text text-lighten-4 center" href="#!">Phaladi Tlhako&nbsp;&nbsp;
+                    <strong>Telephone number:</strong> 0678659492/0683475265&nbsp;&nbsp; <strong>Email:</strong>
+                    phaladistephina@gmail.com</a><br>
+            
+            </div>
+        </div>
+    </div>
+</footer>
+
+</div>
+
+</html>
